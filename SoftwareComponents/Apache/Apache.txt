@@ -1,0 +1,38 @@
+#!/bin/bash
+
+
+# Affichage des variables
+echo $DB_IP
+echo $DB_port
+
+
+# Config du firewall
+#firewall-cmd --permanent --add-port=80/tcp
+#systemctl restart firewalld
+systemctl stop firewalld
+systemctl disable firewalld
+
+
+# Installation 
+# yum -y update
+yum -y install httpd
+
+
+# Copie du defaut
+cp /usr/share/httpd/noindex/index.html /var/www/html/
+
+
+# configuration du noindex - affiche "hostname (no index)" sur la page d accueil
+sed -i -e "s/Testing 123/$HOSTNAME (no index)/g"  /usr/share/httpd/noindex/index.html
+
+
+# configuration du service web - affiche le hostname sur la page d accueil
+sed -i -e "s/Testing 123/$HOSTNAME/g"  /var/www/html/index.html
+
+
+# configuration et demarrage du service
+systemctl enable httpd
+systemctl start httpd
+
+
+
