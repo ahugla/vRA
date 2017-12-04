@@ -1,6 +1,15 @@
 #!/bin/bash
 
 
+# USAGE
+# cd /tmp
+# curl -O https://raw.githubusercontent.com/ahugla/vRA/master/SoftwareComponents/Apache/Apache.txt
+# mv Apache.txt Apache.sh
+# chmod 755 Apache.sh
+# ./Apache.sh
+# rm -f Apache.sh
+
+
 # Affichage des variables
 echo $DB_IP
 echo $DB_port
