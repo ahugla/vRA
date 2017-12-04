@@ -10,6 +10,11 @@
 # rm -f Apache.sh
 
 
+# Commentaires
+# Install httpd via yum
+# Validé pour CentOS 7.x
+
+
 # Affichage des variables
 echo $DB_IP
 echo $DB_port
