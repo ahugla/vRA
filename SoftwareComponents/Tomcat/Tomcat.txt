@@ -85,7 +85,7 @@ sed -i '38 a <role rolename="manager-jmx"/>' $CATALINA_HOME/conf/tomcat-users.xm
 sed -i '39 a <role rolename="manager-status"/>' $CATALINA_HOME/conf/tomcat-users.xml
 sed -i '40 a <role rolename="admin-gui"/>' $CATALINA_HOME/conf/tomcat-users.xml
 sed -i '41 a <role rolename="admin-script"/>' $CATALINA_HOME/conf/tomcat-users.xml
-sed -i '42 a <user username="$Full_Admin_Account" password="$Password" roles="manager-gui,manager-script,manager-jmx,manager-status,admin-gui,admin-script"/>' $CATALINA_HOME/conf/tomcat-users.xml
+sed -i '42 a <user username="'$Full_Admin_Account'" password="'$Password'" roles="manager-gui,manager-script,manager-jmx,manager-status,admin-gui,admin-script"/>' $CATALINA_HOME/conf/tomcat-users.xml
 
 
 # Demarrer Tomcat9
