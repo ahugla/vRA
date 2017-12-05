@@ -1,0 +1,69 @@
+#!/bin/bash
+
+
+# DESCRPTION
+# Tomcat 9 
+# All rights account : admin/tomcat
+# OpenJDK9
+
+
+
+# Config Firewall
+systemctl stop firewalld 
+systemctl disable firewalld 
+
+
+# Install OpenJDK9
+cd /opt
+curl -O http://download.java.net/java/GA/jdk9/9.0.1/binaries/openjdk-9.0.1_linux-x64_bin.tar.gz
+tar -vxzf openjdk-9.0.1_linux-x64_bin.tar.gz
+rm -f openjdk-9.0.1_linux-x64_bin.tar.gz
+
+
+# Configure PATH
+jdkDirName=jdk-9.0.1
+export PATH=$PATH:/opt/$jdkDirName/bin
+export JAVA_HOME=/opt/$jdkDirName
+export JRE_HOME=/opt/$jdkDirName
+
+
+# Configure le .bash_profile
+echo \#UPDATE ALEX >> /root/.bash_profile
+echo export PATH=\$PATH:/opt/$jdkDirName/bin >> /root/.bash_profile
+echo export JAVA_HOME=/opt/$jdkDirName >> /root/.bash_profile
+echo export JRE_HOME=/opt/$jdkDirName >> /root/.bash_profile
+
+
+# Install Tomcat9
+cd /usr/share
+curl -O http://mirrors.standaloneinstaller.com/apache/tomcat/tomcat-9/v9.0.2/bin/apache-tomcat-9.0.2.tar.gz
+tar -vxzf apache-tomcat-9.0.2.tar.gz
+rm -f apache-tomcat-9.0.2.tar.gz
+mv apache-tomcat-9.0.2 tomcat9
+
+
+# Configure CATALINA_HOME
+export CATALINA_HOME=/usr/share/tomcat9
+echo export CATALINA_HOME=/usr/share/tomcat9 >> /root/.bash_profile
+
+
+# Configurer le management remote : context.xml
+# autoriser Manager App et Host Manager en remote :  
+sed -i -e 's/127\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1/.*/g'  /usr/share/tomcat9/webapps/host-manager/META-INF/context.xml
+sed -i -e 's/127\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1/.*/g'  /usr/share/tomcat9/webapps/manager/META-INF/context.xml
+
+
+# Creation d'un comte Full admin : admin / tomcat
+# Access to the HTML GUI, status pages, text interface and JMX proxy
+sed -i '36 a <role rolename="manager-gui"/>' tomcat-users.xml
+sed -i '37 a <role rolename="manager-script"/>' tomcat-users.xml
+sed -i '38 a <role rolename="manager-jmx"/>' tomcat-users.xml
+sed -i '39 a <role rolename="manager-status"/>' tomcat-users.xml
+sed -i '40 a <role rolename="admin-gui"/>' tomcat-users.xml
+sed -i '41 a <role rolename="admin-script"/>' tomcat-users.xml
+sed -i '42 a <user username="admin" password="tomcat" roles="manager-gui,manager-script,manager-jmx,manager-status,admin-gui,admin-script"/>' tomcat-users.xml
+
+
+# Demarrer Tomcat9
+/usr/share/tomcat9/bin/startup.sh
+
