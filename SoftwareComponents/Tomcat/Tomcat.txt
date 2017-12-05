@@ -1,10 +1,22 @@
 #!/bin/bash
 
 
-# DESCRPTION
+# USAGE
+# cd /tmp
+# curl -O https://raw.githubusercontent.com/ahugla/vRA/master/SoftwareComponents/Tomcat/Tomcat.txt
+# mv Tomcat.txt Tomcat.sh
+# chmod 755 Tomcat.sh
+# ./Tomcat.sh
+# rm -f Tomcat.sh
+
+
+# DESCRIPTION
 # Tomcat 9 
 # All rights account : admin/tomcat
 # OpenJDK9
+
+
+# Affichage des variables
 
 
 
