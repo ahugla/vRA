@@ -2,8 +2,8 @@
 
 
 # VRA Properties
-# $Full_Admin_Account :  String        : Compte ayant tous les droits (HTML GUI, status pages, text interface and JMX proxy)
-# $Password           :  Secure String : 
+# $Full_Admin_Account :  String        : Compte Tomcat ayant tous les droits (HTML GUI, status pages, text interface and JMX proxy)
+# $Password           :  Secure String : Password du compte tomcat mais egalement pour les comptes JMX (monitorRole et controlRole)
 
 
 # USAGE
@@ -16,8 +16,10 @@
 
 
 # DESCRIPTION
-# Tomcat 9 
-# All rights account : [user input] / [user input]
+# Tomcat 9 - port 8080
+# Tomcat 9 - compte tous les droits : [user input] / [user input]
+# JMX - port 9090 
+# JMX - comptes monitorRole' (r) et 'controlRole' (rw), utilisent le meme password [user input]
 # OpenJDK9
 
 
@@ -86,6 +88,30 @@ sed -i '39 a <role rolename="manager-status"/>' $CATALINA_HOME/conf/tomcat-users
 sed -i '40 a <role rolename="admin-gui"/>' $CATALINA_HOME/conf/tomcat-users.xml
 sed -i '41 a <role rolename="admin-script"/>' $CATALINA_HOME/conf/tomcat-users.xml
 sed -i '42 a <user username="'$Full_Admin_Account'" password="'$Password'" roles="manager-gui,manager-script,manager-jmx,manager-status,admin-gui,admin-script"/>' $CATALINA_HOME/conf/tomcat-users.xml
+
+
+# JMX - Creation des comptes et affectation des roles
+cd $CATALINA_HOME/conf
+echo monitorRole readonly > jmxremote.access
+echo controlRole readwrite >> jmxremote.access
+
+
+# JMX - creation des passwords pour les comptes
+echo monitorRole $Password > jmxremote.password
+echo controlRole $Password >> jmxremote.password
+chmod 400 jmxremote.password
+
+
+# JMX - configuration de l'environnement pour jmx
+cd $CATALINA_HOME/bin
+echo \#\!/bin/sh > setenv.sh
+echo export CATALINA_OPTS=\"\$CATALINA_OPTS -Dcom.sun.management.jmxremote\" >> setenv.sh
+echo export CATALINA_OPTS=\"\$CATALINA_OPTS -Dcom.sun.management.jmxremote.port=9090\" >> setenv.sh
+echo export CATALINA_OPTS=\"\$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false\" >> setenv.sh
+echo export CATALINA_OPTS=\"\$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false\" >> setenv.sh
+echo export CATALINA_OPTS=\"\$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=true\" >> setenv.sh
+echo export CATALINA_OPTS=\"\$CATALINA_OPTS -Dcom.sun.management.jmxremote.password.file=$CATALINA_HOME/conf/jmxremote.password\" >> setenv.sh
+echo export CATALINA_OPTS=\"\$CATALINA_OPTS -Dcom.sun.management.jmxremote.access.file=$CATALINA_HOME/conf/jmxremote.access\" >> setenv.sh
 
 
 # Demarrer Tomcat9
