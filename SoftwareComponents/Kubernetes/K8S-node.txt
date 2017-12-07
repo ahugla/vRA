@@ -1,0 +1,106 @@
+#!/bin/bash
+
+
+# vRA Properties
+# K8s_Master_IP    string   IP du master K8s
+
+
+# USAGE depuis vRA / Software Component
+# cd /tmp
+# curl -O https://raw.githubusercontent.com/ahugla/vRA/master/SoftwareComponents/Kubernetes/K8S-node.txt
+# mv K8S-node.txt K8S-node.sh
+# chmod 755 K8S-node.sh
+# ./K8S-node.sh $K8s_Master_IP
+# rm -f K8S-node.sh
+
+
+# DESCRIPTION
+# Kubernetes node
+
+
+# Affichage des variables
+echo "K8s_Master_IP : $1"
+
+
+# Affectation des variables d'entrees
+K8s_Master_IP=$1
+
+
+# Considering DNS is up to date so no need to configure /etc/hosts file !
+# nothing to do if DNS is OK
+
+
+# get local ip
+my_ip=$(hostname  -I | cut -f1 -d' ')
+
+
+# Echo parameters
+echo K8s_Master_IP =  $K8s_Master_IP
+
+
+# disable SElinux and make it reboot persistent
+setenforce 0
+sed -i --follow-symlinks 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux && cat /etc/sysconfig/selinux
+
+
+# stop and disable Firewall
+systemctl stop firewalld
+systemctl disable firewalld
+
+
+# Create Repo file for K8s
+cat > /etc/yum.repos.d/virt7-docker-common-release.repo <<EOL
+[virt7-docker-common-release]
+name=virt7-docker-common-release
+baseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+gpgcheck=0
+EOL
+
+
+# Install kubernetes, flannel
+yum -y install --enablerepo=virt7-docker-common-release kubernetes flannel
+
+
+#Configure /etc/kubernetes/config
+sed -i '
+/^KUBE_MASTER=/ s|=.*|="--master=http://'"$K8s_Master_IP"':8080"|
+/^KUBE_LOG_LEVEL=/ s|=.*|="--v=4"|
+' /etc/kubernetes/config
+
+
+#configure kubelet
+# change
+sed -i '
+/^KUBELET_ADDRESS=/ s|=.*|="--address=0.0.0.0"|
+/^KUBELET_API_SERVER=/ s|=.*|="--api-servers=http://'"$K8s_Master_IP"':8080"|
+/^KUBELET_HOSTNAME=/ s|=.*|="--hostname_override='"$my_ip"'"|
+
+
+' /etc/kubernetes/kubelet
+# comment line
+sed -i -e '/KUBELET_POD_INFRA_CONTAINER/s/^/#/g'  /etc/kubernetes/kubelet
+# uncomment lines
+sed -i -e '/KUBELET_PORT/ s/^#//'  /etc/kubernetes/kubelet
+
+
+# configure flannel to overlay docker network
+sed -i '
+/^FLANNEL_ETCD_ENDPOINTS=/ s|=.*|="http://'"$K8s_Master_IP"':2379"|
+/^FLANNEL_ETCD_PREFIX=/ s|=.*|="/kube-centos/network"|
+' /etc/sysconfig/flanneld
+
+
+# start services
+for SERVICES in kube-proxy kubelet flanneld docker; do
+    systemctl restart $SERVICES
+    sleep 5
+    systemctl enable $SERVICES
+    systemctl status $SERVICES
+done
+
+
+#Configure kubectl
+kubectl config set-cluster default-cluster --server=http://$K8s_Master_IP:8080
+kubectl config set-context default-context --cluster=default-cluster --user=default-admin
+kubectl config use-context default-context
+
