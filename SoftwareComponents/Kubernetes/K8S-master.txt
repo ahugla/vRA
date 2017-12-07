@@ -1,0 +1,106 @@
+#!/bin/bash
+
+
+# vRA Properties
+
+
+# USAGE
+# cd /tmp
+# curl -O https://raw.githubusercontent.com/ahugla/vRA/master/SoftwareComponents/Kubernetes/K8S-master.txt
+# mv K8S-master.txt K8S-master.sh
+# chmod 755 K8S-master.sh
+# ./K8S-master.sh
+# rm -f K8S-master.sh
+
+
+# DESCRIPTION
+# Kubernetes Master
+
+
+# Affichage des variables
+
+
+# Considering DNS is up to date so no need to configure /etc/hosts file !
+# nothing to do if DNS is OK
+
+
+# get local ip
+my_ip=$(hostname  -I | cut -f1 -d' ')
+
+
+# disable SElinux and make it reboot persistent
+setenforce 0
+sed -i --follow-symlinks 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux && cat /etc/sysconfig/selinux
+
+
+# stop and disable Firewall
+systemctl stop firewalld
+systemctl disable firewalld
+
+
+# Create Repo file for K8s
+cat > /etc/yum.repos.d/virt7-docker-common-release.repo <<EOL
+[virt7-docker-common-release]
+name=virt7-docker-common-release
+baseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+gpgcheck=0
+EOL
+
+
+# Install kubernetes, etcd and flannel
+yum -y install --enablerepo=virt7-docker-common-release kubernetes etcd flannel
+
+
+#Configure /etc/kubernetes/config
+sed -i '
+/^KUBE_MASTER=/ s|=.*|="--master=http://'"$my_ip"':8080"|
+/^KUBE_LOG_LEVEL=/ s|=.*|="--v=4"|
+' /etc/kubernetes/config
+
+
+#Configure ETCD dans /etc/etcd/etcd.conf
+sed -i '
+/^ETCD_LISTEN_CLIENT_URLS=/ s|=.*|="http://'"0.0.0.0"':2379"|
+/^ETCD_ADVERTISE_CLIENT_URLS=/ s|=.*|="http://'"0.0.0.0"':2379"|
+' /etc/etcd/etcd.conf
+
+
+#Configure K8s dans /etc/kubernetes/apiserver
+# change
+sed -i '
+/^KUBE_API_ADDRESS=/ s|=.*|="--address=0.0.0.0"|
+/^KUBE_ETCD_SERVERS=/ s|=.*|="--etcd-servers=http://'"$my_ip"':2379"|
+' /etc/kubernetes/apiserver
+# uncomment lines
+sed -i -e '/KUBE_API_PORT/ s/^#//' /etc/kubernetes/apiserver
+sed -i -e '/KUBELET_PORT/ s/^#//' /etc/kubernetes/apiserver
+# comment line
+sed -i -e '/KUBE_ADMISSION_CONTROL/s/^/#/g'  /etc/kubernetes/apiserver
+
+
+# start ETCD and create network overlay
+systemctl start etcd
+etcdctl mkdir /kube-centos/network
+etcdctl mk /kube-centos/network/config "{ \"Network\": \"172.30.0.0/16\", \"SubnetLen\": 24, \"Backend\": { \"Type\": \"vxlan\" } }"
+
+
+# config flannel
+sed -i '
+/^FLANNEL_ETCD_ENDPOINTS=/ s|=.*|="http://'"$my_ip"':2379"|
+/^FLANNEL_ETCD_PREFIX=/ s|=.*|="/kube-centos/network"|
+' /etc/sysconfig/flanneld
+
+
+# demarrer les services
+for SERVICES in etcd kube-apiserver kube-controller-manager kube-scheduler flanneld; do
+    systemctl restart $SERVICES
+    systemctl enable $SERVICES
+    systemctl status $SERVICES
+done
+
+
+# set kk as alias for kubectl
+echo "alias kk='kubectl'" >> /root/.bash_profile
+
+
+
