@@ -1,0 +1,56 @@
+#!/bin/bash
+
+
+# VRA Properties
+
+
+# USAGE
+# cd /tmp
+# curl -O https://raw.githubusercontent.com/ahugla/vRA/master/SoftwareComponents/MongoDB/MongoDB.txt
+# mv MongoDB.txt MongoDB.sh
+# chmod 755 MongoDB.sh
+# ./MongoDB.sh
+# rm -f MongoDB.sh
+
+
+# DESCRIPTION
+# MongoDB 3.6 on port 27017
+# For CentOS 7
+
+
+# Affichage des variables
+# Affectation des variables d'entrees
+
+
+# Config Firewall
+systemctl stop firewalld 
+systemctl disable firewalld 
+
+
+# disable SElinux and make it reboot persistent
+setenforce 0
+sed -i --follow-symlinks 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux && cat /etc/sysconfig/selinux
+
+
+# creation du repo yum
+cd /tmp
+echo "[mongodb-org-3.6]" > /etc/yum.repos.d/mongodb-org-3.6.repo 
+echo "name=MongoDB Repository" >> /etc/yum.repos.d/mongodb-org-3.6.repo 
+echo "baseurl=https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.6/x86_64/" >> /etc/yum.repos.d/mongodb-org-3.6.repo 
+echo "gpgcheck=1" >> /etc/yum.repos.d/mongodb-org-3.6.repo 
+echo "enabled=1" >> /etc/yum.repos.d/mongodb-org-3.6.repo 
+echo "gpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc" >> /etc/yum.repos.d/mongodb-org-3.6.repo 
+
+
+# install
+yum install -y mongodb-org
+
+
+# demarrage du service
+systemctl enable mongod
+systemctl start mongod
+# log : /var/log/mongodb/mongod.log 
+# demarrage terminée quand : waiting for connections on port 27017 
+
+
+
