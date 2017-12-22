@@ -1,0 +1,15 @@
+#Usage
+à mettre dans le software component en mode powershell
+
+#commentaire
+créé par Vincent le 22/12/17
+Testé chez Engie sur un W2K12
+
+#variable
+Y en a pas
+
+#code
+install-windowsfeature AD-Domain-Services
+Import-Module ADDSDeployment
+$Secure=ConvertTo-SecureString -String "P@ssword" -AsPlainText -Force
+Install-ADDSForest -DomainName " CORP.SDDC.COM" -SafeModeAdministratorPassword $Secure –force:$true

@@ -1,0 +1,13 @@
+#Usage
+à mettre dans le software component en mode powershell
+
+#commentaire
+créé par Vincent le 22/12/17
+Testé chez Engie sur un W2K12
+
+#variable
+Y en a pas
+
+#code
+import-module servermanager
+add-windowsfeature web-server -includeallsubfeature
