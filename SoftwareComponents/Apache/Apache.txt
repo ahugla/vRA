@@ -44,6 +44,14 @@ sed -i -e "s/Testing 123/$HOSTNAME (no index)/g"  /usr/share/httpd/noindex/index
 sed -i -e "s/Testing 123/$HOSTNAME/g"  /var/www/html/index.html
 
 
+# Activation du module de rapport d'etat
+echo " " >> /etc/httpd/conf/httpd.conf
+echo "# Activation du module de rapport d'etat" >> /etc/httpd/conf/httpd.conf
+echo "<Location \"/server-status\">" >> /etc/httpd/conf/httpd.conf
+echo "    SetHandler server-status" >> /etc/httpd/conf/httpd.conf
+echo "</Location>" >> /etc/httpd/conf/httpd.conf
+
+
 # configuration et demarrage du service
 systemctl enable httpd
 systemctl start httpd
