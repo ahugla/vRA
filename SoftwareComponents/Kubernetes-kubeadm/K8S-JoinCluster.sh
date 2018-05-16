@@ -1,0 +1,38 @@
+#!/bin/bash 
+#SOURCE : https://mapr.com/blog/making-data-actionable-at-scale-part-2-of-3/
+
+# ALEX H.
+# 16 Mai 2018
+# v1.4
+
+# USAGE
+# -----
+# Necessite d'avoir dans le software component une property 'varTokenToJoin' de type 'String' mappé sur 'varTokenToJoin' de 'config master'.
+# 
+# fichierSRC=K8S-JoinCluster.sh
+# cd /tmp
+# curl -O https://raw.githubusercontent.com/ahugla/vRA/master/SoftwareComponents/Kubernetes-kubeadm/$fichierSRC
+# chmod 755 $fichierSRC
+# ./$fichierSRC $varTokenToJoin
+# rm -f $fichierSRC
+
+
+
+#A FAIRE SUR LES NODES:  
+# Necessite d'avoir dans le software component une property varTokenToJoin
+varTokenToJoin=$1
+echo "Token to join : $varTokenToJoin"
+kubeadm join 172.18.4.155:6443 --discovery-token-unsafe-skip-ca-verification --token $varTokenToJoin
+
+
+
+# FIN
+#  c est a ce moment qu'on fait la commande "kubeadm join" sur les nodes : CA PREND 20 s pour apparaitre 
+# In case the token to join has expired, create a new token:
+# On Master, list the existing tokens:
+#  kubeadm token list
+# On Master, if there are no valid tokens, create a new token and list it:
+#   kubeadm token create
+#   kubeadm token list
+# Join additional nodes in the cluster with the newly created token, e.g.,:
+#   kubeadm join 172.16.1.125:6443 --discovery-token-unsafe-skip-ca-verification --token 5d4164.15b01d9af2e64824
