@@ -19,7 +19,11 @@
 #
 
 # Log $PATH
-echo "PATH = $PATH"
+echo "Intial PATH = $PATH"
+
+# Update PATH
+PATH=$PATH:/usr/local/sbin:/usr/sbin:/root/bin
+echo "New PATH = $PATH"
 
 # Log env
 echo  "--------------- env ---------------"
@@ -81,6 +85,7 @@ kubectl get pods --all-namespaces
 
 
 # ATTENDRE QUE TOUT SOIT UP
+sleep 5
 nbLignes=`kubectl get pods --all-namespaces | grep kube-system | wc -l`
 nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
 echo "$nbRunning sur $nbLignes"
@@ -103,4 +108,7 @@ echo "varTokenToJoin = $varTokenToJoin"
 rm -f /tmp/k8stoken
 echo $varTokenToJoin > /tmp/k8stoken
 
+
+# creation de l'alias 'kk'
+echo "alias kk='kubectl'" >> /root/.bash_profile
 
