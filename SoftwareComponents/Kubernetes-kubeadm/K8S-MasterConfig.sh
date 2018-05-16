@@ -18,6 +18,14 @@
 # varTokenToJoin=`cat /tmp/k8stoken`
 #
 
+# Log $PATH
+echo "PATH = $PATH"
+
+# Log env
+echo  "--------------- env ---------------"
+env
+echo "------------------------------------"
+
 
 # Validate the ip-address:
 echo "CHECK: hostname --ip-address"
@@ -57,7 +65,7 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documen
 
 
 # Validate all pods are running
-echo CHECK PODS STATUS (Must be running)
+echo "CHECK PODS STATUS (Must be running)"
 kubectl get pods --all-namespaces
 
 # EXEMPLE D'OUTPUT:
