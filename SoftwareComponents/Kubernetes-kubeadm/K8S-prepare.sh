@@ -7,6 +7,8 @@
 
 # USAGE
 # -----
+# CONFIGURER LE REBOOT DANS LE SOFTWARE COMPONENT
+#
 # fichierSRC=K8S-prepare.sh
 # cd /tmp
 # curl -O https://raw.githubusercontent.com/ahugla/vRA/master/SoftwareComponents/Kubernetes-kubeadm/$fichierSRC
@@ -56,3 +58,6 @@ EOF
 yum install -y kubelet kubeadm kubectl
 systemctl start kubelet
 systemctl enable kubelet
+
+
+# CONFIGURER LE REBOOT DANS LE SOFTWARE COMPONENT
