@@ -53,6 +53,9 @@ kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=$(ho
 #
 
 
+echo PROCESS=`ps -p $$`
+
+
 # start  your cluster
 # Attention : $HOME n'existe pas (shell application director)
 echo "Initial HOME = $HOME"
