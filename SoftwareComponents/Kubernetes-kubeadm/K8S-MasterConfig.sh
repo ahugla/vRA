@@ -99,7 +99,7 @@ echo "Kubernetes Master is ready"
 # on recupere le token necessaire pour que les nodes puissent rejoindre
 # Necessite d'avoir dans le software component une property varTokenToJoin de type Computed
 varTokenToJoin=`kubeadm token list | grep token | awk '{print $1}'`
-echo "varTokenToJoin = $varTokenToJoin"
+echo "varTokenToJoin in 'K8S-MasterConfig.sh' = $varTokenToJoin"
 rm -f /tmp/k8stoken
 echo $varTokenToJoin > /tmp/k8stoken
 

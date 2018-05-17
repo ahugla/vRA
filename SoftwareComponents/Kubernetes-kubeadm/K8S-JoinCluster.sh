@@ -28,7 +28,7 @@ echo "New PATH = $PATH"
 #A FAIRE SUR LES NODES:  
 # Necessite d'avoir dans le software component une property varTokenToJoin
 varTokenToJoin=$1
-echo "Token to join : $varTokenToJoin"
+echo "Token to join in 'K8S-JoinCluster.sh' : $varTokenToJoin"
 kubeadm join 172.18.4.155:6443 --discovery-token-unsafe-skip-ca-verification --token $varTokenToJoin
 
 
