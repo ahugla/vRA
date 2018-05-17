@@ -8,12 +8,13 @@
 # USAGE
 # -----
 # Necessite d'avoir dans le software component une property 'varTokenToJoin' de type 'String' mappé sur 'varTokenToJoin' de 'config master'.
-# 
+# Ainsi qu'une property 'MasterNode' mappé sur l'ip du master
+#
 # fichierSRC=K8S-JoinCluster.sh
 # cd /tmp
 # curl -O https://raw.githubusercontent.com/ahugla/vRA/master/SoftwareComponents/Kubernetes-kubeadm/$fichierSRC
 # chmod 755 $fichierSRC
-# ./$fichierSRC $varTokenToJoin
+# ./$fichierSRC $varTokenToJoin $MasterNode
 # rm -f $fichierSRC
 
 
@@ -29,7 +30,9 @@ echo "New PATH = $PATH"
 # Necessite d'avoir dans le software component une property varTokenToJoin
 varTokenToJoin=$1
 echo "Token to join in 'K8S-JoinCluster.sh' : $varTokenToJoin"
-kubeadm join 172.18.4.155:6443 --discovery-token-unsafe-skip-ca-verification --token $varTokenToJoin
+MasterNode=$2
+echo "MasterNode in 'K8S-JoinCluster.sh' : $MasterNode"
+kubeadm join $MasterNode:6443 --discovery-token-unsafe-skip-ca-verification --token $varTokenToJoin
 
 
 
