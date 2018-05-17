@@ -17,6 +17,13 @@
 # rm -f $fichierSRC
 
 
+# Log $PATH
+echo "Intial PATH = $PATH"
+
+# Update PATH
+export PATH=$PATH:/usr/local/sbin:/usr/sbin:/root/bin
+echo "New PATH = $PATH"
+
 
 #A FAIRE SUR LES NODES:  
 # Necessite d'avoir dans le software component une property varTokenToJoin

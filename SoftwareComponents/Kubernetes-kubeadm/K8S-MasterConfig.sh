@@ -25,11 +25,6 @@ echo "Intial PATH = $PATH"
 export PATH=$PATH:/usr/local/sbin:/usr/sbin:/root/bin
 echo "New PATH = $PATH"
 
-# Log env
-echo  "--------------- env ---------------"
-env
-echo "------------------------------------"
-
 
 # Validate the ip-address:
 echo "CHECK: hostname --ip-address"

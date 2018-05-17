@@ -17,6 +17,14 @@
 # rm -f $fichierSRC
 
 
+# Log $PATH
+echo "Intial PATH = $PATH"
+
+# Update PATH
+export PATH=$PATH:/usr/local/sbin:/usr/sbin:/root/bin
+echo "New PATH = $PATH"
+
+
 # Disable SELinux
 setenforce 0
 sed -i '/^SELINUX./ { s/enforcing/disabled/; }' /etc/selinux/config
