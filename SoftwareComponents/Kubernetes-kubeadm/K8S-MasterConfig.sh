@@ -81,18 +81,30 @@ kubectl get pods --all-namespaces
 # kube-system   kube-scheduler-vra-vm-0640            1/1       Running   1          9m
 
 
-# ATTENDRE QUE TOUT SOIT UP
+# ATTENDRE QUE TOUT SOIT UP - OLD CODE
+# sleep 5
+# nbLignes=`kubectl get pods --all-namespaces | grep kube-system | wc -l`
+# nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
+# echo "$nbRunning sur $nbLignes"
+# while [[ "$nbLignes" != "$nbRunning" ]] 
+# do
+#	echo "Not Ready : wait 5 sec"
+#	sleep 5
+#	nbLignes=`kubectl get pods --all-namespaces | grep kube-system | wc -l`
+#	nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
+#	echo "$nbRunning sur $nbLignes"
+#done
+#echo "Kubernetes Master is ready"
+
+
+# ATTENDRE QUE TOUT SOIT UP - NEW CODE :  on considere qu'il y a 7 pods a demarrer
 sleep 5
-nbLignes=`kubectl get pods --all-namespaces | grep kube-system | wc -l`
 nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
-echo "$nbRunning sur $nbLignes"
-while [[ "$nbLignes" != "$nbRunning" ]] 
-do
-	echo "Not Ready : wait 5 sec"
+echo "nbRunning = $nbRunning"
+while [[ "$nbRunning" -lt "7" ]]; do
 	sleep 5
-	nbLignes=`kubectl get pods --all-namespaces | grep kube-system | wc -l`
 	nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
-	echo "$nbRunning sur $nbLignes"
+	echo "nbRunning = $nbRunning"
 done
 echo "Kubernetes Master is ready"
 
