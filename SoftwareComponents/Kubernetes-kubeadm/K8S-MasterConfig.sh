@@ -7,6 +7,7 @@
 
 # USAGE
 # -----
+# Necessite d'avoir 2 nodes minimums => car pod 'dns' est replique
 # Necessite d'avoir dans le software component une property 'varTokenToJoin' de type 'Computed'.
 # 
 # fichierSRC=K8S-MasterConfig.sh
@@ -67,6 +68,8 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documen
 # Validate all pods are running
 echo "CHECK PODS STATUS (Must be running)"
 kubectl get pods --all-namespaces
+
+# ATTENTION : Necessite d'avoir 2 nodes minimums => car pod 'dns' est replique
 
 # EXEMPLE D'OUTPUT:
 # [root@vRA-VM-0640 ~]# kubectl get pods --all-namespaces
