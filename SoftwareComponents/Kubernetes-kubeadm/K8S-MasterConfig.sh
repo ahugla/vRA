@@ -54,9 +54,10 @@ kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=$(ho
 
 
 # start  your cluster
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+# Attention : utilisation de /root car $HOME n'existe pas (shell application director)
+mkdir -p /root/.kube
+sudo cp -i /etc/kubernetes/admin.conf /root/.kube/config
+sudo chown $(id -u):$(id -g) /root/.kube/config
 
 # Install Flannel for network
 # Doc: https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#44-joining-your-nodes
