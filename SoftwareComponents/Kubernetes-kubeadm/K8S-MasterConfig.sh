@@ -22,7 +22,7 @@
 echo "Intial PATH = $PATH"
 
 # Update PATH
-PATH=$PATH:/usr/local/sbin:/usr/sbin:/root/bin
+export PATH=$PATH:/usr/local/sbin:/usr/sbin:/root/bin
 echo "New PATH = $PATH"
 
 # Log env
