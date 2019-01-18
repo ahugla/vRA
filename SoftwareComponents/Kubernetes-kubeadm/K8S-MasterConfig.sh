@@ -31,7 +31,7 @@ echo "CHECK: hostname --ip-address"
 hostname --ip-address
 
 # Initialize Kubernetes master
-kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=$(hostname --ip-address) --token-ttl 0  
+kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=$(hostname --ip-address) --token-ttl 0 --ignore-preflight-errors=NumCPU
 
 # The kubeadm command will take a few minutes and it will print a 'kubeadm join'
 # command once completed. Make sure to capture and store this 'kubeadm join'
