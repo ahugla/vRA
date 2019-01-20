@@ -19,15 +19,15 @@
 #
 
 # Log pour Debugging
-echo Shell utilise: $0
-echo parametre1: $1
-echo parametre2: $2
-echo parametre3: $3
-echo parametre4: $4
-echo parametre5: $5
+echo "Shell utilise: $0"
+echo "parametre1: $1"
+echo "parametre2: $2"
+echo "parametre3: $3"
+echo "parametre4: $4"
+echo "parametre5: $5"
 
 # Log $PATH
-echo "Intial PATH = $PATH"
+echo "Initial PATH = $PATH"
 
 # Update PATH
 export PATH=$PATH:/usr/local/sbin:/usr/sbin:/root/bin
