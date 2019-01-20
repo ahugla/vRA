@@ -31,7 +31,7 @@ echo "CHECK: hostname --ip-address"
 hostname --ip-address
 
 # Initialize Kubernetes master
-kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=$(hostname --ip-address) --token-ttl 0 --ignore-preflight-errors=NumCPU
+kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=$(hostname --ip-address) --token-ttl 0 #--ignore-preflight-errors=NumCPU
 
 # The kubeadm command will take a few minutes and it will print a 'kubeadm join'
 # command once completed. Make sure to capture and store this 'kubeadm join'
@@ -70,7 +70,15 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # Install Flannel for network
 # Doc: https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#44-joining-your-nodes
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+# Get Flannel version and URL
+curl -O https://github.com/coreos/flannel/releases/latest
+flannelVersion=`more latest | awk -F / '{print $8}' | awk -F \" '{print $1}'`
+echo FLANNEL VERSION: $flannelVersion
+rm latest
+flannelURL=https://raw.githubusercontent.com/coreos/flannel/$flannelVersion/Documentation/kube-flannel.yml
+echo FLANNEL URL: $flannelURL
+#install Flannel
+kubectl apply -f $flannelURL
 
 
 # Validate all pods are running
