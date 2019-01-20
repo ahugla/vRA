@@ -18,6 +18,14 @@
 # varTokenToJoin=`cat /tmp/k8stoken`
 #
 
+# Log pour Debugging
+echo Shell utilise: $0
+echo parametre1: $1
+echo parametre2: $2
+echo parametre3: $3
+echo parametre4: $4
+echo parametre5: $5
+
 # Log $PATH
 echo "Intial PATH = $PATH"
 
@@ -74,7 +82,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 curl -O https://github.com/coreos/flannel/releases/latest
 flannelVersion=`more latest | awk -F / '{print $8}' | awk -F \" '{print $1}'`
 echo FLANNEL VERSION initial: -$flannelVersion-
-$flannelVersion=`echo $flannelVersion | sed 's/ //g'
+flannelVersion=`echo $flannelVersion | sed 's/ //g'`
 echo FLANNEL VERSION sans espace: -$flannelVersion-
 rm latest
 flannelURL=https://raw.githubusercontent.com/coreos/flannel/$flannelVersion/Documentation/kube-flannel.yml
