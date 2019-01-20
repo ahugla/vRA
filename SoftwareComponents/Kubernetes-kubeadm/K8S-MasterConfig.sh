@@ -2,8 +2,8 @@
 #SOURCE : https://mapr.com/blog/making-data-actionable-at-scale-part-2-of-3/
 
 # ALEX H.
-# 16 Mai 2018
-# v1.4
+# 20 Janvier 2019
+# v1.5
 
 # USAGE
 # -----
@@ -73,7 +73,9 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 # Get Flannel version and URL
 curl -O https://github.com/coreos/flannel/releases/latest
 flannelVersion=`more latest | awk -F / '{print $8}' | awk -F \" '{print $1}'`
-echo FLANNEL VERSION: $flannelVersion
+echo FLANNEL VERSION initial: -$flannelVersion-
+$flannelVersion=`echo $flannelVersion | sed 's/ //g'
+echo FLANNEL VERSION sans espace: -$flannelVersion-
 rm latest
 flannelURL=https://raw.githubusercontent.com/coreos/flannel/$flannelVersion/Documentation/kube-flannel.yml
 echo FLANNEL URL: $flannelURL
