@@ -84,47 +84,30 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8
 # Validate all pods are running
 echo "CHECK PODS STATUS (Must be running)"
 kubectl get pods --all-namespaces
-
-
 # EXEMPLE D'OUTPUT:
-# [root@vRA-VM-0640 ~]# kubectl get pods --all-namespaces
-# NAMESPACE     NAME                                  READY     STATUS    RESTARTS   AGE
-# kube-system   etcd-vra-vm-0640                      1/1       Running   1          9m
-# kube-system   kube-apiserver-vra-vm-0640            1/1       Running   1          9m
-# kube-system   kube-controller-manager-vra-vm-0640   1/1       Running   1          9m
-# kube-system   kube-dns-86f4d74b45-8c26j             2/3       Running   0          10m
-# kube-system   kube-flannel-ds-xp8mk                 1/1       Running   0          32s
-# kube-system   kube-proxy-dzv84                      1/1       Running   1          10m
-# kube-system   kube-scheduler-vra-vm-0640            1/1       Running   1          9m
+# [root@vRA-VM-0878 ~]# kubectl get pods --all-namespaces
+# kube-system   coredns-86c58d9df4-dxzfz              1/1     Running   0          3m23s
+# kube-system   coredns-86c58d9df4-hjzjv              1/1     Running   0          3m23s
+# kube-system   etcd-vra-vm-0878                      1/1     Running   0          2m17s
+# kube-system   kube-apiserver-vra-vm-0878            1/1     Running   0          2m31s
+# kube-system   kube-controller-manager-vra-vm-0878   1/1     Running   0          2m18s
+# kube-system   kube-flannel-ds-amd64-h5s48           1/1     Running   0          87s
+# kube-system   kube-flannel-ds-amd64-rt9mr           1/1     Running   0          3m23s
+# kube-system   kube-proxy-trfcx                      1/1     Running   0          87s
+# kube-system   kube-proxy-vdpdk                      1/1     Running   0          3m23s
+# kube-system   kube-scheduler-vra-vm-0878            1/1     Running   0          2m24s
 
 
-# ATTENDRE QUE TOUT SOIT UP - OLD CODE
-# sleep 5
-# nbLignes=`kubectl get pods --all-namespaces | grep kube-system | wc -l`
-# nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
-# echo "$nbRunning sur $nbLignes"
-# while [[ "$nbLignes" != "$nbRunning" ]] 
-# do
-#	echo "Not Ready : wait 5 sec"
-#	sleep 5
-#	nbLignes=`kubectl get pods --all-namespaces | grep kube-system | wc -l`
-#	nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
-#	echo "$nbRunning sur $nbLignes"
-#done
-#echo "Kubernetes Master is ready"
-
-
-# ATTENDRE QUE TOUT SOIT UP - NEW CODE :  on considere qu'il y a 7 pods a demarrer
+# ATTENDRE QUE TOUT SOIT UP :  on considere qu'il y a 10 pods a demarrer
 sleep 5
 nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
 echo "nbRunning = $nbRunning"
-while [[ "$nbRunning" -lt "7" ]]; do
+while [[ "$nbRunning" -lt "10" ]]; do
 	sleep 5
 	nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
 	echo "nbRunning = $nbRunning"
 done
 echo "Kubernetes Master is ready"
-
 
 
 # on recupere le token necessaire pour que les nodes puissent rejoindre
