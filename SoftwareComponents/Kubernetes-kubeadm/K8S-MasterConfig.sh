@@ -2,8 +2,8 @@
 #SOURCE : https://mapr.com/blog/making-data-actionable-at-scale-part-2-of-3/
 
 # ALEX H.
-# 20 Janvier 2019
-# v1.5
+# 21 Janvier 2019
+# v1.7
 
 # USAGE
 # -----
@@ -38,7 +38,7 @@ echo "New PATH = $PATH"
 echo "CHECK: hostname --ip-address"
 hostname --ip-address
 
-# Initialize Kubernetes master
+# Initialize Kubernetes master : https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#before-you-begin
 kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=$(hostname --ip-address) --token-ttl 0 #--ignore-preflight-errors=NumCPU
 
 # The kubeadm command will take a few minutes and it will print a 'kubeadm join'
@@ -77,18 +77,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 
 # Install Flannel for network
-# Doc: https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#44-joining-your-nodes
-# Get Flannel version and URL
-curl -O https://github.com/coreos/flannel/releases/latest
-flannelVersion=`more latest | awk -F / '{print $8}' | awk -F \" '{print $1}'`
-echo FLANNEL VERSION initial: -$flannelVersion-
-flannelVersion=`echo $flannelVersion | sed 's/ //g'`
-echo FLANNEL VERSION sans espace: -$flannelVersion-
-rm latest
-flannelURL=https://raw.githubusercontent.com/coreos/flannel/$flannelVersion/Documentation/kube-flannel.yml
-echo FLANNEL URL: $flannelURL
-#install Flannel
-kubectl apply -f $flannelURL
+# Doc: https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#before-you-begin
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
 
 
 # Validate all pods are running
