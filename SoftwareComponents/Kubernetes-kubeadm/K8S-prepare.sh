@@ -2,8 +2,8 @@
 #SOURCE : https://mapr.com/blog/making-data-actionable-at-scale-part-2-of-3/
 
 # ALEX H.
-# 21 Janvier 2019
-# v1.7
+# 10 Octobre 2019
+# v1.8
 
 # USAGE
 # -----
@@ -48,8 +48,12 @@ yum install -y yum-utils device-mapper-persistent-data lvm2
 yum-config-manager \
     --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo
+
+#Update all (before docker install to avoid last docker version compatibility issue with K8S)
 yum update -y 
-yum install -y docker-ce-18.06.1.ce
+
+# to see all available version for a package : yum --showduplicates list docker-ce
+yum install -y docker-ce-18.09.9-3.el7   # derniere version supportée à cette date
 mkdir /etc/docker
 cat > /etc/docker/daemon.json <<EOF
 {
@@ -88,7 +92,5 @@ yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 systemctl start kubelet
 systemctl enable kubelet
 
-
-yum update -y
 
 # CONFIGURER LE REBOOT DANS LE SOFTWARE COMPONENT

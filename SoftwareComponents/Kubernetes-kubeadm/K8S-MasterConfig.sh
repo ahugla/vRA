@@ -2,8 +2,8 @@
 #SOURCE : https://mapr.com/blog/making-data-actionable-at-scale-part-2-of-3/
 
 # ALEX H.
-# 21 Janvier 2019
-# v1.7
+# 10 Octobre 2019
+# v1.8
 
 # USAGE
 # -----
@@ -78,8 +78,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # Install Flannel for network
 # Doc: https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#before-you-begin
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
-
+kubectl apply -f  https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 # Validate all pods are running
 echo "CHECK PODS STATUS (Must be running)"
@@ -92,9 +91,7 @@ kubectl get pods --all-namespaces
 # kube-system   kube-apiserver-vra-vm-0878            1/1     Running   0          2m31s
 # kube-system   kube-controller-manager-vra-vm-0878   1/1     Running   0          2m18s
 # kube-system   kube-flannel-ds-amd64-h5s48           1/1     Running   0          87s
-# kube-system   kube-flannel-ds-amd64-rt9mr           1/1     Running   0          3m23s
 # kube-system   kube-proxy-trfcx                      1/1     Running   0          87s
-# kube-system   kube-proxy-vdpdk                      1/1     Running   0          3m23s
 # kube-system   kube-scheduler-vra-vm-0878            1/1     Running   0          2m24s
 
 
@@ -102,7 +99,7 @@ kubectl get pods --all-namespaces
 sleep 5
 nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
 echo "nbRunning = $nbRunning"
-while [[ "$nbRunning" -lt "10" ]]; do
+while [[ "$nbRunning" -lt "8" ]]; do
 	sleep 5
 	nbRunning=`kubectl get pods --all-namespaces | grep Running | wc -l`
 	echo "nbRunning = $nbRunning"
